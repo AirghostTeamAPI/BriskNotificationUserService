@@ -10,13 +10,11 @@ const passport_1 = tslib_1.__importDefault(require("passport"));
 const router = express_1.Router();
 router.post("/user/auth", (req, res) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.body.login, req.body.password);
         const jwtToken = yield user_1.authenticateUser(req.body.login, req.body.password);
         if (req.body.pushToken) {
             user_2.findUserAndUpdateToken(req.body.login, req.body.pushToken);
         }
         return res.status(http_status_codes_1.default.OK).json({ jwtToken });
-        console.log(jwtToken);
     }
     catch (err) {
         console.error(err.message);
@@ -26,7 +24,6 @@ router.post("/user/auth", (req, res) => tslib_1.__awaiter(void 0, void 0, void 0
 router.get("/user/viewedFols", passport_1.default.authenticate('bearer', { session: false }), (req, res) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     try {
         const foundUser = (req.user);
-        console.log(foundUser);
         const userFols = foundUser.viewedFols;
         return res.status(http_status_codes_1.default.OK).json({ userFols });
     }
@@ -40,7 +37,6 @@ router.post("/fol/:folId", passport_1.default.authenticate('bearer', { session: 
         const foundLogin = yield User_1.default.findOne({ login: foundUser.login });
         foundLogin.viewedFols.push(req.params.folId);
         yield User_1.default.updateOne({ login: foundLogin.login }, foundLogin);
-        console.log(foundLogin);
         return res.status(http_status_codes_1.default.OK).json({ foundLogin });
     }
     catch (err) {

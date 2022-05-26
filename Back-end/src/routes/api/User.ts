@@ -10,14 +10,12 @@ const router: Router = Router();
 
 router.post("/user/auth", async (req: Request, res: Response) => {
   try {
-    console.log(req.body.login, req.body.password)
     const jwtToken = await authenticateUser(req.body.login, req.body.password)
 
     if (req.body.pushToken) {
       findUserAndUpdateToken(req.body.login, req.body.pushToken)
     }
     return res.status(HttpStatusCodes.OK).json({ jwtToken });
-    console.log(jwtToken)
   } catch (err) {
     console.error((err as Error).message);
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send("Server Error");
@@ -27,7 +25,6 @@ router.post("/user/auth", async (req: Request, res: Response) => {
 router.get("/user/viewedFols", passport.authenticate('bearer', { session: false }), async (req: Request, res: Response) => {
   try {
     const foundUser: Partial<IUser> = (req.user)
-    console.log(foundUser);
 
     const userFols = foundUser.viewedFols
     return res.status(HttpStatusCodes.OK).json({ userFols })
@@ -44,7 +41,6 @@ router.post("/fol/:folId", passport.authenticate('bearer', { session: false }), 
     foundLogin.viewedFols.push(req.params.folId)
 
     await User.updateOne({ login: foundLogin.login }, foundLogin)
-    console.log(foundLogin)
 
     return res.status(HttpStatusCodes.OK).json({ foundLogin })
 
