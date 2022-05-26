@@ -26,6 +26,7 @@ function updateUserViewedFol(login, folId) {
         const foundLogin = yield User_1.default.findOne({ login });
         foundLogin.viewedFols.push(folId);
         yield User_1.default.updateOne({ login: foundLogin.login }, foundLogin);
+        return foundLogin;
     });
 }
 exports.updateUserViewedFol = updateUserViewedFol;

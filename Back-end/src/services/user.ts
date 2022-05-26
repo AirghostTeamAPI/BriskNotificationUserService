@@ -23,4 +23,6 @@ export async function updateUserViewedFol(login: string, folId: string) {
   foundLogin.viewedFols.push(folId)
 
   await User.updateOne({ login: foundLogin.login }, foundLogin)
+
+  return foundLogin;
 }

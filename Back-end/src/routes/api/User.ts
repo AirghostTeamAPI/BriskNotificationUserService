@@ -1,8 +1,7 @@
 import HttpStatusCodes from "http-status-codes";
 import { Request, Response, Router } from 'express';
-import { authenticateUser } from '../../services/user';
+import { authenticateUser, updateUserViewedFol } from '../../services/user';
 import { findUserAndUpdateToken } from "../../repository/user";
-import User from '../../models/User';
 import passport from 'passport';
 import { IUser } from "src/interface/user";
 
@@ -37,12 +36,10 @@ router.get("/user/viewedFols", passport.authenticate('bearer', { session: false 
 router.post("/fol/:folId", passport.authenticate('bearer', { session: false }), async (req: Request, res: Response) => {
   try {
     const foundUser: Partial<IUser> = (req.user)
-    const foundLogin: IUser = await User.findOne({ login: foundUser.login });
-    foundLogin.viewedFols.push(req.params.folId)
 
-    await User.updateOne({ login: foundLogin.login }, foundLogin)
+    const response = await updateUserViewedFol(foundUser.login, req.params.folId)
 
-    return res.status(HttpStatusCodes.OK).json({ foundLogin })
+    return res.status(HttpStatusCodes.OK).json(response.viewedFols)
 
   } catch (err) {
     console.log(err)
