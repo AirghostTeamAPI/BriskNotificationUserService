@@ -19,6 +19,10 @@ const UserSchema = new mongoose_1.Schema({
     },
     pushToken: {
         type: String
+    },
+    viewedFols: {
+        type: [String],
+        required: false
     }
 });
 const User = mongoose_1.model("Users", UserSchema);

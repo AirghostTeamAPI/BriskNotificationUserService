@@ -4,7 +4,6 @@ const tslib_1 = require("tslib");
 const body_parser_1 = tslib_1.__importDefault(require("body-parser"));
 const express_1 = tslib_1.__importDefault(require("express"));
 const database_1 = tslib_1.__importDefault(require("../config/database"));
-const FOL_1 = require("./scripts/FOL");
 const User_1 = require("./scripts/User");
 const passport_1 = tslib_1.__importDefault(require("passport"));
 const passport_http_bearer_1 = tslib_1.__importDefault(require("passport-http-bearer"));
@@ -32,17 +31,13 @@ passport_1.default.use(new passport_http_bearer_1.default(function (token, done)
         return done(null, user, { scope: 'all' });
     });
 }));
-const FOL_2 = tslib_1.__importDefault(require("./routes/api/FOL"));
 const User_3 = tslib_1.__importDefault(require("./routes/api/User"));
-app.use("/api", FOL_2.default);
 app.use("/api", User_3.default);
 const port = app.get("port");
 const server = app.listen(port, () => console.log(`Server started on port ${port}`));
-FOL_1.importCsvFile();
 User_1.importUserCsvFile();
 setInterval(function () {
     console.log('Syncing Spreadsheets...');
-    FOL_1.importCsvFile();
     User_1.importUserCsvFile();
 }, 60 * 1000); // 60 * 1000 milsec
 exports.default = server;
