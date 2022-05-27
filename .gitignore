@@ -149,3 +149,4 @@ config/default.json
 Back-end/config/default.json
 Back-end/node_modules
 Back-end/dist
+Back-end/.env
