@@ -11,7 +11,7 @@ export async function authenticateUser(login: string, password: string) {
         username: foundUser.username,
         equipment: foundUser.equipment,
         login: foundUser.login,
-      }, process.env.JWTSECRET);
+      }, process.env.jwtSecret);
 
       return token;
     }
