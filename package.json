@@ -10,7 +10,7 @@
     "deploy": "node dist/src/server.js",
     "watch-deploy": "nodemon dist/src/server.js",
     "server": "tsc | concurrently \"npm run watch-tsc\" \"npm run watch-deploy\"",
-    "start": "tsc || npm run deploy",
+    "start": "npm install | tsc | npm run deploy",
     "heroku-postbuild": "npm run tsc"
   },
   "dependencies": {
