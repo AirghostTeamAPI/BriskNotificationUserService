@@ -33,7 +33,7 @@ router.get("/user/viewedFols", passport.authenticate('bearer', { session: false 
   }
 });
 
-router.get("/user/equipments", async (req: Request, res: Response) => {
+router.post("/user/equipments", async (req: Request, res: Response) => {
   try {
     const userEquipments = await findUsersByEquipments(req.body.equipments)
     return res.status(HttpStatusCodes.OK).json(userEquipments)
