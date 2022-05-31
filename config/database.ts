@@ -1,6 +1,6 @@
 import config from "config";
-import { ConnectionOptions, connect } from "mongoose";
-
+import { ConnectionOptions, connect, set } from "mongoose";
+set('debug', true);
 const connectDB = async () => {
   try {
     const mongoURI: string = process.env.mongoURI || config.get("mongoURI");

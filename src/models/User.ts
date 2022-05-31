@@ -19,6 +19,9 @@ const UserSchema: Schema = new Schema({
   pushToken: {
     type: String
   },
+  country: {
+    type: String
+  },
   viewedFols: {
     type: [String],
     required: false
