@@ -4,9 +4,9 @@ import User from "../models/User";
 export async function findUsersByEquipments(equipments: string[]) {
   let foundUsers: IUser[] = [];
   for (let i = 0; i < equipments.length; i++) {
-    const Users = await User.find({ equipment: equipments[i] });
+    const Users = await User.find({ equipment: { "$regex": equipments[i], "$options": "i" } });
     for (let j = 0; j < Users.length; j++) {
-      foundUsers.push(Users[j]);
+      foundUsers.push(Users[j]._id);
     }
   }
   return foundUsers;
