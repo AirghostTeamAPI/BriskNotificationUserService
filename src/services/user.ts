@@ -3,6 +3,7 @@ import { IUser } from 'src/interface/user';
 import User from '../models/User';
 
 export async function authenticateUser(login: string, password: string) {
+  if (!verifyBody(login, password)) return undefined
   const foundUser = await User.findOne({ login });
   if (foundUser) {
     if (foundUser.password === password) {
@@ -15,6 +16,15 @@ export async function authenticateUser(login: string, password: string) {
 
       return token;
     }
+  }
+}
+
+
+export function verifyBody(login?, password?){
+  if(!login || !password) {
+    return undefined
+  } else {
+    return true
   }
 }
 

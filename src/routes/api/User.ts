@@ -14,6 +14,9 @@ router.post("/user/auth", async (req: Request, res: Response) => {
     if (req.body.pushToken) {
       findUserAndUpdateToken(req.body.login, req.body.pushToken)
     }
+    if(!jwtToken) {
+      return res.status(400).json({error:"Information needed not provided"})
+    }
     return res.status(HttpStatusCodes.OK).json({ jwtToken });
   } catch (err) {
     console.error((err as Error).message);
