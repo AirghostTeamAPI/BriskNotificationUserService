@@ -8,6 +8,7 @@ import User from "./models/User";
 import jwt from 'jsonwebtoken';
 import { IUser } from './interface/user';
 import cors from 'cors';
+import { createHours } from "./scripts/Access";
 require('dotenv').config();
 
 const app = express();
@@ -35,6 +36,8 @@ passport.use(new BearerStrategy(
 
 import USER from './routes/api/User';
 app.use("/api", USER);
+import ACCESS from './routes/api/Access';
+app.use("/api", ACCESS);
 
 const port = app.get("port");
 const server = app.listen(port, () =>
@@ -42,6 +45,7 @@ const server = app.listen(port, () =>
 );
 
 importUserCsvFile()
+createHours()
 
 setInterval(function () {
   console.log('Syncing Spreadsheets...');
