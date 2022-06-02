@@ -12,6 +12,11 @@ export async function findUsersByEquipments(equipments: string[]) {
   return foundUsers;
 }
 
+export async function findUsersByLogin(login) {
+  const foundUser = User.findOne({ login });
+  return foundUser;
+}
+
 export async function findUserAndUpdateToken(login: string, pushToken: string) {
   const foundUser = await User.findOne({ login });
   await User.updateOne({ _id: foundUser.id }, { pushToken });

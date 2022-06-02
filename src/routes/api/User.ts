@@ -1,11 +1,27 @@
 import HttpStatusCodes from "http-status-codes";
 import { Request, Response, Router } from 'express';
 import { authenticateUser, findUserAndUpdateLocation, updateUserViewedFol } from '../../services/user';
-import { findUserAndUpdateToken, findUserByLocation, findUsersByEquipments } from "../../repository/user";
+import { findUserAndUpdateToken, findUserByLocation, findUsersByEquipments, findUsersByLogin } from "../../repository/user";
 import passport from 'passport';
-import { IUser } from "src/interface/user";
+import { IUser } from "../../interface/user";
 
 const router: Router = Router();
+
+router.get("/user", async (req: Request, res: Response) => {
+  try {
+    const foundUser = await findUsersByLogin(req.query.login)
+    if (!foundUser) {
+      return res.status(HttpStatusCodes.NOT_FOUND).json({
+        message: "User not found"
+      })
+    }
+
+    return res.status(HttpStatusCodes.OK).json(foundUser)
+  }
+  catch (err) {
+    console.log(err)
+  }
+});
 
 router.post("/user/auth", async (req: Request, res: Response) => {
   try {
