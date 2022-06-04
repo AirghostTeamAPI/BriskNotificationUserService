@@ -36,6 +36,7 @@ router.post("/user/auth", async (req: Request, res: Response) => {
       return res.status(400).json({error:"Information needed not provided"})
     }
     return res.status(HttpStatusCodes.OK).json({ jwtToken });
+  }
   } catch (err) {
     console.error((err as Error).message);
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send("Server Error");
