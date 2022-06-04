@@ -1,5 +1,5 @@
 import config from "config";
-import { ConnectionOptions, connect } from "mongoose";
+import { ConnectionOptions, connect, set } from "mongoose";
 
 const connectDB = async () => {
   try {

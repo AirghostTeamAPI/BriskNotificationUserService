@@ -1,19 +1,37 @@
 import HttpStatusCodes from "http-status-codes";
 import { Request, Response, Router } from 'express';
-import { authenticateUser, updateUserViewedFol } from '../../services/user';
-import { findUserAndUpdateToken, findUsersByEquipments } from "../../repository/user";
+import { authenticateUser, findUserAndUpdateLocation, findUsersFols, updateUserViewedFol } from '../../services/user';
+import { findUserAndUpdateToken, findUserByLocation, findUsersByEquipments, findUsersByLogin } from "../../repository/user";
 import passport from 'passport';
-import { IUser } from "src/interface/user";
+import { IUser } from "../../interface/user";
 
 const router: Router = Router();
 
+router.get("/user", async (req: Request, res: Response) => {
+  try {
+    const foundUser = await findUsersByLogin(req.query.login)
+    if (!foundUser) {
+      return res.status(HttpStatusCodes.NOT_FOUND).json({
+        message: "User not found"
+      })
+    }
+
+    return res.status(HttpStatusCodes.OK).json(foundUser)
+  }
+  catch (err) {
+    console.log(err)
+  }
+});
+
 router.post("/user/auth", async (req: Request, res: Response) => {
   try {
-    const jwtToken = await authenticateUser(req.body.login, req.body.password)
+    const jwtToken = await authenticateUser(req.body.login, req.body.password, req.body.country)
 
     if (req.body.pushToken) {
       findUserAndUpdateToken(req.body.login, req.body.pushToken)
     }
+    if (req.body.country) {
+      findUserAndUpdateLocation(req.body.login, req.body.country)
     if(!jwtToken) {
       return res.status(400).json({error:"Information needed not provided"})
     }
@@ -21,6 +39,16 @@ router.post("/user/auth", async (req: Request, res: Response) => {
   } catch (err) {
     console.error((err as Error).message);
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send("Server Error");
+  }
+});
+
+router.get("/user/location", async (req: Request, res: Response) => {
+  try {
+    const userEquipments = await findUserByLocation(req.query.country as string)
+    return res.status(HttpStatusCodes.OK).json(userEquipments)
+  }
+  catch (err) {
+    console.log(err)
   }
 });
 
@@ -40,6 +68,16 @@ router.post("/user/equipments", async (req: Request, res: Response) => {
   try {
     const userEquipments = await findUsersByEquipments(req.body.equipments)
     return res.status(HttpStatusCodes.OK).json(userEquipments)
+  }
+  catch (err) {
+    console.log(err)
+  }
+});
+
+router.get("/user/fols", async (req: Request, res: Response) => {
+  try {
+    const users = await findUsersFols()
+    return res.status(HttpStatusCodes.OK).json(users)
   }
   catch (err) {
     console.log(err)
