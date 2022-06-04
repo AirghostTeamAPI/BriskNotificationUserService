@@ -37,3 +37,14 @@ export async function findUserAndUpdateLocation(login: string, userLocation: str
 
   return foundLogin;
 }
+
+export async function findUsersFols() {
+  const foundUsers = await User.find({});
+  let userFols = []
+  for (const user of foundUsers) {
+    for (const fol of user.viewedFols) {
+      if (user.viewedFols) userFols.push(fol)
+    }
+  }
+  return userFols;
+}

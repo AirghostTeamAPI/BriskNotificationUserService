@@ -1,6 +1,6 @@
 import HttpStatusCodes from "http-status-codes";
 import { Request, Response, Router } from 'express';
-import { authenticateUser, findUserAndUpdateLocation, updateUserViewedFol } from '../../services/user';
+import { authenticateUser, findUserAndUpdateLocation, findUsersFols, updateUserViewedFol } from '../../services/user';
 import { findUserAndUpdateToken, findUserByLocation, findUsersByEquipments, findUsersByLogin } from "../../repository/user";
 import passport from 'passport';
 import { IUser } from "../../interface/user";
@@ -66,6 +66,16 @@ router.post("/user/equipments", async (req: Request, res: Response) => {
   try {
     const userEquipments = await findUsersByEquipments(req.body.equipments)
     return res.status(HttpStatusCodes.OK).json(userEquipments)
+  }
+  catch (err) {
+    console.log(err)
+  }
+});
+
+router.get("/user/fols", async (req: Request, res: Response) => {
+  try {
+    const users = await findUsersFols()
+    return res.status(HttpStatusCodes.OK).json(users)
   }
   catch (err) {
     console.log(err)
