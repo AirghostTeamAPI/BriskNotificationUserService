@@ -32,6 +32,8 @@ router.post("/user/auth", async (req: Request, res: Response) => {
     }
     if (req.body.country) {
       findUserAndUpdateLocation(req.body.login, req.body.country)
+    if(!jwtToken) {
+      return res.status(400).json({error:"Information needed not provided"})
     }
     return res.status(HttpStatusCodes.OK).json({ jwtToken });
   } catch (err) {
