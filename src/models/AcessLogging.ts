@@ -1,6 +1,6 @@
-import { model, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const AccessSchema: Schema = new Schema({
+const AccessSchema: mongoose.Schema = new mongoose.Schema({
   hours: [
     {
       hour: {
@@ -15,6 +15,6 @@ const AccessSchema: Schema = new Schema({
   ]
 });
 
-const Access = model("Access", AccessSchema);
+const Access = mongoose.model("Access", AccessSchema);
 
 export default Access;

@@ -1,4 +1,4 @@
-import { sign } from 'jsonwebtoken';
+import jsonwebtoken from 'jsonwebtoken';
 import { IUser } from 'src/interface/user';
 import User from '../models/User';
 
@@ -7,7 +7,7 @@ export async function authenticateUser(login: string, password: string, country?
   const foundUser = await User.findOne({ login });
   if (foundUser) {
     if (foundUser.password === password) {
-      const token = sign({
+      const token = jsonwebtoken.sign({
         id: foundUser.id,
         username: foundUser.username,
         equipment: foundUser.equipment,

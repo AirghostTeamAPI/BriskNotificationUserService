@@ -10,7 +10,7 @@
     "test": "jest",
     "watch-tsc": "tsc -w",
     "deploy": "node dist/src/server.js",
-    "watch-deploy": "nodemon dist/src/server.js",
+    "watch-deploy": "nodemon --experimental-modules --es-module-specifier-resolution=node dist/src/server.js",
     "server": "tsc | concurrently \"npm run watch-tsc\" \"npm run watch-deploy\"",
     "start": "npm run deploy",
     "heroku-postbuild": "npm run tsc"
@@ -42,9 +42,10 @@
     "passport": "^0.5.2",
     "passport-http-bearer": "^1.0.1",
     "pdf.js-extract": "^0.2.0",
+    "prettier": "^2.6.2",
     "request": "^2.88.0",
     "tslib": "^1.14.1",
-    "typescript": "^3.4.5",
+    "typescript": "^4.2.0",
     "yarn": "^1.22.18"
   },
   "devDependencies": {

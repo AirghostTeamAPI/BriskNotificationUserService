@@ -1,16 +1,16 @@
 import config from "config";
-import { ConnectionOptions, connect, set } from "mongoose";
+import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
     const mongoURI: string = process.env.mongoURI || config.get("mongoURI");
-    const options: ConnectionOptions = {
+    const options: mongoose.ConnectionOptions = {
       useNewUrlParser: true,
       useCreateIndex: true,
       useFindAndModify: false,
       useUnifiedTopology: true,
     };
-    await connect(mongoURI, options);
+    await mongoose.connect(mongoURI, options);
     console.log("MongoDB Connected...");
   } catch (err) {
     console.error((err as Error).message);

@@ -9,7 +9,8 @@ import jwt from 'jsonwebtoken';
 import { IUser } from './interface/user';
 import cors from 'cors';
 import { createHours } from "./scripts/Access";
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 connectDB();
