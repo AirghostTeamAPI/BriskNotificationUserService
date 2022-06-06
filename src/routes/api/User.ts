@@ -37,7 +37,6 @@ router.post("/user/auth", async (req: Request, res: Response) => {
         message: "Password is incorrect"
       })
     }
-
     if (req.body.pushToken) {
       findUserAndUpdateToken(req.body.login, req.body.pushToken)
     }
