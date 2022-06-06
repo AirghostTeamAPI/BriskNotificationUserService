@@ -5,7 +5,9 @@ import User from '../models/User';
 export async function authenticateUser(login: string, password: string, country?: string) {
   if (!verifyBody(login, password)) return undefined
   const foundUser = await User.findOne({ login });
+  if (!foundUser) { return 'userNotFound' }
   if (foundUser) {
+    if (foundUser.password !== password) { return 'passwordIncorrect' }
     if (foundUser.password === password) {
       const token = jsonwebtoken.sign({
         id: foundUser.id,
@@ -21,8 +23,8 @@ export async function authenticateUser(login: string, password: string, country?
 }
 
 
-export function verifyBody(login?, password?){
-  if(!login || !password) {
+export function verifyBody(login?, password?) {
+  if (!login || !password) {
     return undefined
   } else {
     return true

@@ -27,19 +27,27 @@ router.post("/user/auth", async (req: Request, res: Response) => {
   try {
     const jwtToken = await authenticateUser(req.body.login, req.body.password, req.body.country)
 
+    if (jwtToken === 'userNotFound') {
+      return res.status(HttpStatusCodes.NOT_FOUND).json({
+        message: "User not found"
+      })
+    }
+    if (jwtToken === 'passwordIncorrect') {
+      return res.status(HttpStatusCodes.UNAUTHORIZED).json({
+        message: "Password is incorrect"
+      })
+    }
+
     if (req.body.pushToken) {
       findUserAndUpdateToken(req.body.login, req.body.pushToken)
     }
     if (req.body.country) {
       findUserAndUpdateLocation(req.body.login, req.body.country)
-    if(!jwtToken) {
-      return res.status(400).json({error:"Information needed not provided"})
+      return res.status(HttpStatusCodes.OK).json({ jwtToken });
     }
-    return res.status(HttpStatusCodes.OK).json({ jwtToken });
-  }
   } catch (err) {
-    console.error((err as Error).message);
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send("Server Error");
+    console.error((err as Error));
+    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send((err as Error).message);
   }
 });
 
