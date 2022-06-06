@@ -1,0 +1,21 @@
+name: NODE CI
+on: pull_request
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the Repo
+      - uses: actions/checkout@v2
+
+      # Install Node 12
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          cache: 'yarn'
+
+      # Install dependencies
+      - run: yarn install
+
+      # Run tests
+      - run: yarn test
