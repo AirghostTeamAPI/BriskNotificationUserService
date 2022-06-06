@@ -12,7 +12,7 @@
     "deploy": "node dist/src/server.js",
     "watch-deploy": "nodemon --experimental-modules --es-module-specifier-resolution=node dist/src/server.js",
     "server": "tsc | concurrently \"npm run watch-tsc\" \"npm run watch-deploy\"",
-    "start": "npm run deploy",
+    "start": "tsc | npm run deploy",
     "heroku-postbuild": "npm run tsc"
   },
   "dependencies": {
