@@ -45,6 +45,7 @@ router.post("/user/auth", async (req: Request, res: Response) => {
       findUserAndUpdateLocation(req.body.login, req.body.country)
       return res.status(HttpStatusCodes.OK).json({ jwtToken });
     }
+    return res.status(HttpStatusCodes.OK).json({ jwtToken });
   } catch (err) {
     console.error((err as Error));
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send((err as Error).message);
