@@ -7,7 +7,7 @@ export async function findUsersByEquipments(equipments: string[]) {
   for (let i = 0; i < equipments.length; i++) {
     const Users = await User.find({ equipment: { "$regex": equipments[i], "$options": "i" } });
     for (let j = 0; j < Users.length; j++) {
-      const blocked = checkIfBlocked(Users[j].id);
+      const blocked = await checkIfBlocked(Users[j].id);
       if (!blocked) {
         foundUsers.push(Users[j]._id);
       }

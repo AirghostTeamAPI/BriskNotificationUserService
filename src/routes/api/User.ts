@@ -10,7 +10,8 @@ const router: Router = Router();
 router.get("/user", async (req: Request, res: Response) => {
   try {
     const foundUser = await findUsersByLogin(req.query.login)
-    if (checkIfBlocked(foundUser.id)) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" });
+    const blocked = await checkIfBlocked(req.body.login)
+    if (blocked) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" })
     if (!foundUser) {
       return res.status(HttpStatusCodes.NOT_FOUND).json({
         message: "User not found"
@@ -41,7 +42,8 @@ router.patch("/user/block", async (req: Request, res: Response) => {
 
 router.post("/user/auth", async (req: Request, res: Response) => {
   try {
-    if (checkIfBlocked(req.body.login)) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" })
+    const blocked = await checkIfBlocked(req.body.login)
+    if (blocked) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" })
     const jwtToken = await authenticateUser(req.body.login, req.body.password, req.body.country)
 
     if (jwtToken === 'userNotFound') {
@@ -82,7 +84,8 @@ router.get("/user/location", async (req: Request, res: Response) => {
 router.get("/user/viewedFols", passport.authenticate('bearer', { session: false }), async (req: Request, res: Response) => {
   try {
     const foundUser: Partial<IUser> = (req.user)
-    if (checkIfBlocked(foundUser.id)) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" });
+    const blocked = await checkIfBlocked(req.body.login)
+    if (blocked) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" })
     const userFols = foundUser.viewedFols
     return res.status(HttpStatusCodes.OK).json({ userFols })
   }
@@ -114,7 +117,8 @@ router.get("/user/fols", async (req: Request, res: Response) => {
 router.post("/fol/:folId", passport.authenticate('bearer', { session: false }), async (req: Request, res: Response) => {
   try {
     const foundUser: Partial<IUser> = (req.user)
-
+    const blocked = await checkIfBlocked(foundUser.login)
+    if (blocked) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" })
     const response = await updateUserViewedFol(foundUser.login, req.params.folId)
 
     return res.status(HttpStatusCodes.OK).json(response.viewedFols)
