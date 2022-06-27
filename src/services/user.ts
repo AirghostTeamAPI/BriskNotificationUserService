@@ -1,5 +1,6 @@
 import jsonwebtoken from 'jsonwebtoken';
-import { IUser } from 'src/interface/user';
+import { IUser } from '../interface/user';
+import BlockedUser from '../models/blockedUsers';
 import User from '../models/User';
 
 export async function authenticateUser(login: string, password: string, country?: string) {
@@ -22,6 +23,23 @@ export async function authenticateUser(login: string, password: string, country?
   }
 }
 
+export async function blockUser(userId) {
+  const foundUser = await User.findOne({ _id: userId });
+  await User.findOne({ _id: userId }).remove().exec();
+
+  await BlockedUser.create({ userId, login: foundUser.login });
+}
+
+export async function checkIfBlocked(userId) {
+  const blockedUser = await BlockedUser.findOne({ userId });
+
+  if (blockedUser) {
+    return true;
+  } else {
+    return false
+  }
+}
+
 
 export function verifyBody(login?, password?) {
   if (!login || !password) {
@@ -33,6 +51,7 @@ export function verifyBody(login?, password?) {
 
 export async function updateUserViewedFol(login: string, folId: string) {
   const foundLogin: IUser = await User.findOne({ login });
+
   foundLogin.viewedFols.push(folId)
 
   await User.updateOne({ login: foundLogin.login }, foundLogin)
@@ -55,7 +74,10 @@ export async function findUsersFols() {
   let userFols = []
   for (const user of foundUsers) {
     for (const fol of user.viewedFols) {
-      if (user.viewedFols) userFols.push(fol)
+      const blocked = await checkIfBlocked(user.id)
+      if (!blocked) {
+        if (user.viewedFols) userFols.push(fol)
+      }
     }
   }
   return userFols;

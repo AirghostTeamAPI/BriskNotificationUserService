@@ -1,7 +1,7 @@
 import HttpStatusCodes from "http-status-codes";
 import { Request, Response, Router } from 'express';
-import { authenticateUser, findUserAndUpdateLocation, findUsersFols, updateUserViewedFol } from '../../services/user';
-import { findUserAndUpdateToken, findUserByLocation, findUsersByEquipments, findUsersByLogin } from "../../repository/user";
+import { authenticateUser, blockUser, checkIfBlocked, findUserAndUpdateLocation, findUsersFols, updateUserViewedFol } from '../../services/user';
+import { findUserAndUpdateToken, findUserByLocation, findUserId, findUsersByEquipments, findUsersByLogin } from "../../repository/user";
 import passport from 'passport';
 import { IUser } from "../../interface/user";
 
@@ -10,6 +10,7 @@ const router: Router = Router();
 router.get("/user", async (req: Request, res: Response) => {
   try {
     const foundUser = await findUsersByLogin(req.query.login)
+    if (checkIfBlocked(foundUser.id)) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" });
     if (!foundUser) {
       return res.status(HttpStatusCodes.NOT_FOUND).json({
         message: "User not found"
@@ -23,8 +24,24 @@ router.get("/user", async (req: Request, res: Response) => {
   }
 });
 
+router.patch("/user/block", async (req: Request, res: Response) => {
+  try {
+    const foundUser = await findUserId(req.query.id)
+
+    if (!foundUser) return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "User not found" });
+
+    const blockedUser = await blockUser(req.query.id);
+
+    return res.status(HttpStatusCodes.OK).json(blockedUser)
+  }
+  catch (err) {
+    console.log(err)
+  }
+});
+
 router.post("/user/auth", async (req: Request, res: Response) => {
   try {
+    if (checkIfBlocked(req.body.login)) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" })
     const jwtToken = await authenticateUser(req.body.login, req.body.password, req.body.country)
 
     if (jwtToken === 'userNotFound') {
@@ -65,7 +82,7 @@ router.get("/user/location", async (req: Request, res: Response) => {
 router.get("/user/viewedFols", passport.authenticate('bearer', { session: false }), async (req: Request, res: Response) => {
   try {
     const foundUser: Partial<IUser> = (req.user)
-
+    if (checkIfBlocked(foundUser.id)) return res.status(HttpStatusCodes.FORBIDDEN).json({ message: "User is blocked" });
     const userFols = foundUser.viewedFols
     return res.status(HttpStatusCodes.OK).json({ userFols })
   }
