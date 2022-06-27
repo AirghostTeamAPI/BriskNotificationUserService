@@ -7,8 +7,6 @@ export async function getAccessLogging() {
 }
 
 export async function updateAccessLogging(hour: number) {
-  console.log(hour);
-
   const foundAccess = await Access.findOne({ "hours.hour": hour });
 
   foundAccess.hours.forEach(element => {
